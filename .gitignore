@@ -1,3 +1,5 @@
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -131,8 +133,8 @@ dmypy.json
 
 **/dataset/data/**
 wandb/
-pix2tex/model/checkpoints/**
-!pix2tex/model/checkpoints/*.py
+model/checkpoints/**
+!model/checkpoints/*.py
 !**/.gitkeep
 .vscode
 .DS_Store
