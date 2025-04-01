@@ -32,8 +32,16 @@ def train(args):
     if args.load_chkpt is not None:
         model.load_state_dict(torch.load(args.load_chkpt, map_location=device))
 
-    def save_models(e, step=0):
-        torch.save(model.state_dict(), os.path.join(out_path, '%s_e%02d_step%02d.pth' % (args.name, e+1, step)))
+    def save_models(e, step=0, bleu=0, edit_dist=0, token_acc=0):
+        # save model with bleu, edit, acc
+        bleu_str = f"{bleu:.3f}"
+        ed_str = f"{edit_dist:.3f}"
+        acc_str = f"{token_acc:.3f}"
+
+        save_path = os.path.join(out_path,
+                                 f"{args.name}_e{e + 1:02d}_step{step}_BLEU_{bleu_str}_ED_{ed_str}_ACC_{acc_str}.pth")
+        torch.save(model.state_dict(), save_path)
+        #torch.save(model.state_dict(), os.path.join(out_path, '%s_e%02d_step%02d.pth' % (args.name, e+1, step)))
         yaml.dump(dict(args), open(os.path.join(out_path, 'config.yaml'), 'w+'))
 
     opt = get_optimizer(args.optimizer)(model.parameters(), args.lr, betas=args.betas)
@@ -64,18 +72,25 @@ def train(args):
                         wandb.log({'train/loss': total_loss})
                 if (i+1+len(dataloader)*e) % args.sample_freq == 0:
                     bleu_score, edit_distance, token_accuracy = evaluate(model, valdataloader, args, num_batches=int(args.valbatches*e/args.epochs), name='val')
-                    if bleu_score > max_bleu and token_accuracy > max_token_acc:
+                    if bleu_score > max_bleu or token_accuracy > max_token_acc:
                         max_bleu, max_token_acc = bleu_score, token_accuracy
-                        save_models(e, step=i)
+                        # save when higher score
+                        save_models(e, step=i, bleu=bleu_score, edit_dist=edit_distance, token_acc=token_accuracy)
+                        # save_models(e, step=i)
             if (e+1) % args.save_freq == 0:
-                save_models(e, step=len(dataloader))
+                bleu_score, edit_distance, token_accuracy = evaluate(model, valdataloader, args,
+                                                                     num_batches=int(args.valbatches * e / args.epochs),
+                                                                     name='val')
+                save_models(e, step=len(dataloader), bleu=bleu_score, edit_dist=edit_distance, token_acc=token_accuracy)
+                # save_models(e, step=len(dataloader))
             if args.wandb:
                 wandb.log({'train/epoch': e+1})
     except KeyboardInterrupt:
         if e >= 2:
             save_models(e, step=i)
         raise KeyboardInterrupt
-    save_models(e, step=len(dataloader))
+    save_models(e, step=len(dataloader), bleu=bleu_score, edit_dist=edit_distance, token_acc=token_accuracy)
+    #save_models(e, step=len(dataloader))
 
 
 if __name__ == '__main__':
