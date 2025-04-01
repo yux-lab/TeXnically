@@ -4,7 +4,7 @@ import torch.nn as nn
 from . import hybrid
 from . import vit
 from . import transformer
-
+from . import convnext
 
 class Model(nn.Module):
     def __init__(self, encoder, decoder, args):
@@ -40,6 +40,8 @@ class Model(nn.Module):
 def get_model(args):
     if args.encoder_structure.lower() == 'vit':
         encoder = vit.get_encoder(args)
+    elif args.encoder_structure.lower() == "convnext":
+        encoder = convnext.get_encoder(args)
     elif args.encoder_structure.lower() == 'hybrid':
         encoder = hybrid.get_encoder(args)
     else:
