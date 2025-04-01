@@ -131,7 +131,8 @@ dmypy.json
 .pyre/
 
 
-**/dataset/data/**
+/dataset/data/*
+!/dataset/data/
 wandb/
 model/checkpoints/**
 !model/checkpoints/*.py
