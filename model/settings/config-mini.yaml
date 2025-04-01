@@ -6,10 +6,10 @@ backbone_layers:
 betas:
 - 0.9
 - 0.999
-batchsize: 64
+batchsize: 2
 bos_token: 1
 channels: 1
-data: dataset/data/train.pkl
+data: dataset/data/miniTrain.pkl
 debug: false
 decoder_args:
   attn_on_attn: true
@@ -20,7 +20,7 @@ decoder_args:
 dim: 256
 encoder_depth: 4
 eos_token: 2
-epochs: 40
+epochs: 2
 gamma: 0.9995
 heads: 8
 id: null
@@ -34,7 +34,7 @@ micro_batchsize: -1
 min_height: 32
 min_width: 32
 model_path: checkpoints
-name: TeXnically
+name: TeXnically-mini
 num_layers: 4
 num_tokens: 8000
 optimizer: AdamW
@@ -43,7 +43,7 @@ pad: false
 pad_token: 0
 patch_size: 16
 sample_freq: 3000
-save_freq: 5
+save_freq: 1
 scheduler: StepLR
 seed: 42
 encoder_structure: hybrid
@@ -52,4 +52,4 @@ test_samples: 5
 testbatchsize: 20
 tokenizer: model/dataset/tokenizer.json
 valbatches: 100
-valdata: dataset/data/val.pkl
+valdata: dataset/data/miniVal.pkl
