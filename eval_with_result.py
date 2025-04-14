@@ -1,4 +1,4 @@
-from pix2tex.dataset.dataset import Im2LatexDataset
+from dataset.dataset import Im2LatexDataset
 import argparse
 import logging
 import yaml
@@ -13,8 +13,8 @@ from tqdm.auto import tqdm
 import wandb
 from Levenshtein import distance
 
-from pix2tex.models import get_model, Model
-from pix2tex.utils import *
+from models import get_model, Model
+from utils.utils import *
 
 
 def detokenize(tokens, tokenizer):
@@ -38,6 +38,7 @@ def evaluate(model: Model, dataset: Im2LatexDataset, args: Munch, num_batches: i
     log = {}
     bleus, edit_dists, token_acc = [], [], []
 
+    os.makedirs(os.path.dirname(results_path), exist_ok=True)
     # path to csv
     file_exists = os.path.isfile(results_path)
 
@@ -80,7 +81,8 @@ def evaluate(model: Model, dataset: Im2LatexDataset, args: Munch, num_batches: i
             token_acc.append(tok_acc)
 
             # get image path
-            image_path = dataset.pairs[i][0][1]  #
+            # TODO path are wrong,fix this
+            image_path = dataset.pairs[i][0][1]  # not correct
 
             # save to CSV
             writer.writerow([image_path, pred_latex, truth_latex, bleu, edit_dist, tok_acc])

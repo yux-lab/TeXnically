@@ -187,9 +187,10 @@ def num_model_params(model):
 
 @contextlib.contextmanager
 def in_model_path():
-    #import pix2tex
-    #model_path = os.path.join(os.path.dirname(pix2tex.__file__), 'model')
-    model_path = os.path.join(os.getcwd(), 'models')
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    model_path = os.path.join(root_dir, 'model')
+    #print(f"[INFO] Switching to model path: {model_path}")
+
     saved = os.getcwd()
     os.chdir(model_path)
     try:
