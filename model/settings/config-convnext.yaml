@@ -22,7 +22,7 @@ emb_dropout: 0
 encoder_dims: [64, 128, 256, 512]  # the last dim must be equal to `dim` which was used in decoder
 encoder_depths: [3, 3, 9, 3]
 eos_token: 2
-epochs: 2
+epochs: 30
 gamma: 0.9995
 heads: 8
 id: null
@@ -52,6 +52,6 @@ encoder_structure: convnext
 temperature: 0.2
 test_samples: 5
 testbatchsize: 20
-tokenizer: model/dataset/tokenizer.json
+tokenizer: dataset/tokenizer.json
 valbatches: 100
 valdata: dataset/data/miniVal.pkl

@@ -20,7 +20,7 @@ decoder_args:
 dim: 256
 encoder_depth: 4
 eos_token: 2
-epochs: 40
+epochs: 30
 gamma: 0.9995
 heads: 8
 id: null
@@ -50,6 +50,6 @@ encoder_structure: hybrid
 temperature: 0.2
 test_samples: 5
 testbatchsize: 20
-tokenizer: model/dataset/tokenizer.json
+tokenizer: dataset/tokenizer.json
 valbatches: 100
 valdata: dataset/data/val.pkl
