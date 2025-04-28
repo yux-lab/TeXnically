@@ -187,10 +187,10 @@ def num_model_params(model):
 
 @contextlib.contextmanager
 def in_model_path():
+    #import TeXnically
+    #model_path = os.path.join(os.path.dirname(TeXnically.__file__), 'model')
     root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     model_path = os.path.join(root_dir, 'model')
-    #print(f"[INFO] Switching to model path: {model_path}")
-
     saved = os.getcwd()
     os.chdir(model_path)
     try:

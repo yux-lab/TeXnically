@@ -70,7 +70,7 @@ class LatexOCR:
         """
 
         if arguments is None:
-            arguments = Munch({'config': '../checkpoints/celery-latest-0412/config.yaml', 'checkpoint': '../checkpoints/celery-latest-0412/celery-latest-0412_e14_step2310_BLEU_0.911_ED_0.076_ACC_0.709.pth', 'no_cuda': True, 'no_resize': False})
+            arguments = Munch({'config': '../checkpoints/full_math_end/config.yaml', 'checkpoint': '../checkpoints/full_math_end/full_math_end_e22_step1613_BLEU_0.917_ED_0.064_ACC_0.661.pth', 'no_cuda': True, 'no_resize': False})
 
             #arguments = Munch({'config': 'settings/config.yaml', 'checkpoint': 'checkpoints/weights.pth', 'no_cuda': True, 'no_resize': False})
 
@@ -87,6 +87,7 @@ class LatexOCR:
         self.model = get_model(self.args)
         self.model.load_state_dict(torch.load(self.args.checkpoint, map_location=self.args.device))
         self.model.eval()
+
 
         if 'image_resizer.pth' in os.listdir(os.path.dirname(self.args.checkpoint)) and not arguments.no_resize:
             self.image_resizer = ResNetV2(layers=[2, 3, 3], num_classes=max(self.args.max_dimensions)//32, global_pool='avg', in_chans=1, drop_rate=.05,
@@ -213,11 +214,11 @@ def check_file_path(paths:List[Path], wdir:Optional[Path]=None)->List[str]:
     return list(set(files))
 
 def main(arguments):
-    path = user_data_dir('pix2tex')
+    path = user_data_dir('TeXnically')
     os.makedirs(path, exist_ok=True)
     history_file = os.path.join(path, 'history.txt')
     with suppress(NameError):
-        # user can `ln -s /dev/null ~/.local/share/pix2tex/history.txt` to
+        # user can `ln -s /dev/null ~/.local/share/TeXnically/history.txt` to
         # disable history record
         with suppress(OSError):
             readline.read_history_file(history_file)
@@ -250,7 +251,7 @@ def main(arguments):
             if ins == 'x':
                 break
             elif ins in ['?', 'h', 'help']:
-                print('''pix2tex help:
+                print('''TeXnically help:
 
     Usage:
         On Windows and macOS you can copy the image into memory and just press ENTER to get a prediction.

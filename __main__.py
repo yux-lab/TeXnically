@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 def main():
     from argparse import ArgumentParser
 
@@ -21,7 +20,7 @@ def main():
     import sys
 
     name = os.path.split(sys.argv[0])[-1]
-    if arguments.gui or name in ['pix2tex_gui', 'latexocr']:
+    if arguments.gui or name in ['TeXnically_gui', 'latexocr']:
         from .gui import main
     else:
         from .cli import main

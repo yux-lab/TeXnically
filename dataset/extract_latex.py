@@ -110,7 +110,7 @@ if __name__ == '__main__':
     if not os.path.exists(args.file):
         raise ValueError('File can not be found. %s' % args.file)
 
-    from pix2tex.dataset.demacro import pydemacro
+    from dataset.demacro import pydemacro
     s = pydemacro(open(args.file, 'r', encoding='utf-8').read())
     if args.unescape:
         s = html.unescape(s)

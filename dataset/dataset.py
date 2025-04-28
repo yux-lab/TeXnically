@@ -103,10 +103,6 @@ class Im2LatexDataset:
             self.pairs = np.array(self.pairs, dtype=object)
         self.size = len(self.pairs)
 
-        # print("=== Debug: First 5 Batches in self.pairs ===")
-        # for i, batch in enumerate(self.pairs[:5]):  # by yux
-        #     print(f"Batch {i}: {batch}")
-
         self.size = len(self.pairs)
         return self
 
