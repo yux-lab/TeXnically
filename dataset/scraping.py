@@ -8,7 +8,7 @@ import re
 import argparse
 import logging
 from typing import Callable, List, Tuple
-from dataset.extract_latex import find_math
+from extract_latex import find_math
 
 htmltags = re.compile(r'<(noscript|script)>.*?<\/\1>', re.S)
 wikilinks = re.compile(r'href="/wiki/(.*?)"')

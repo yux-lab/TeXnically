@@ -14,7 +14,7 @@ from transformers import PreTrainedTokenizerFast
 from tqdm.auto import tqdm
 
 from utils.utils import in_model_path
-from dataset.transforms import train_transform, test_transform
+from transforms import train_transform, test_transform
 
 
 
