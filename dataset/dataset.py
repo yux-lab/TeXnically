@@ -14,7 +14,7 @@ from transformers import PreTrainedTokenizerFast
 from tqdm.auto import tqdm
 
 from utils.utils import in_model_path
-from transforms import train_transform, test_transform
+from dataset.transforms import train_transform, test_transform
 
 
 
@@ -54,11 +54,17 @@ class Im2LatexDataset:
 
         if images is not None and equations is not None:
             assert tokenizer is not None
+            # 处理路径
             self.images = [path.replace('\\', '/') for path in glob.glob(join(images, '*.png'))]
+            #获取样本数量
             self.sample_size = len(self.images)
+            # 加载公式文件，转成一个列表
             eqs = open(equations, 'r', encoding='UTF-8').read().split('\n')
+            # 提取图像文件名编号作为索引
             self.indices = [int(os.path.basename(img).split('.')[0]) for img in self.images]
+            # 初始化分词器（Tokenizer） encode:文本转 token ID decode:ID 转回文本
             self.tokenizer = PreTrainedTokenizerFast(tokenizer_file=tokenizer)
+            # 各种配置参数
             self.shuffle = shuffle
             self.batchsize = batchsize
             self.max_seq_len = max_seq_len
@@ -68,6 +74,7 @@ class Im2LatexDataset:
             self.keep_smaller_batches = keep_smaller_batches
             self.test = test
             # check the image dimension for every image and group them together
+            # 相同尺寸的图像会被放在一起，可以避免填充（padding）造成的资源浪费
             try:
                 for i, im in tqdm(enumerate(self.images), total=len(self.images)):
                     width, height = imagesize.get(im)
@@ -78,6 +85,8 @@ class Im2LatexDataset:
             self.data = dict(self.data)
             self._get_size()
 
+            # 让一个类的实例变成可迭代对象（iterable）
+            # 可以通过 for batch in dataset: 来遍历数据
             iter(self)
 
     def __len__(self):
@@ -123,9 +132,12 @@ class Im2LatexDataset:
         """
 
         eqs, ims = batch.T
+        # 编码
         tok = self.tokenizer(list(eqs), return_token_type_ids=False)
+        # 返回token id 和 attention mask
         # pad with bos and eos token
         for k, p in zip(tok, [[self.bos_token_id, self.eos_token_id], [1, 1]]):
+            # 对 token 序列做 padding ，使得一个 batch 中的不同长度公式可以组成一个固定尺寸的 tensor
             tok[k] = pad_sequence([torch.LongTensor([p[0]]+x+[p[1]]) for x in tok[k]], batch_first=True, padding_value=self.pad_token_id)
         # check if sequence length is too long
         if self.max_seq_len < tok['attention_mask'].shape[1]:
@@ -142,6 +154,26 @@ class Im2LatexDataset:
                 if np.random.random() < .04:
                     im[im != 255] = 0
             images.append(self.transform(image=im)['image'][:1])
+            # 保存 transform 后的图像（调试用）
+            # 反归一化参数（和 transform 中的 Normalize 一致）
+            # mean = np.array([0.7931, 0.7931, 0.7931])
+            # std = np.array([0.1738, 0.1738, 0.1738])
+            #
+            # # 获取 transform 后的图像张量并转换为 numpy
+            # debug_image = self.transform(image=im)['image']  # CHW, [0,1]
+            # debug_image_np = debug_image.permute(1, 2, 0).cpu().numpy()  # HWC
+            #
+            # # 反归一化：x = x * std + mean
+            # debug_image_np = debug_image_np * std + mean
+            #
+            # # 缩放到 [0, 255] 并转为 uint8
+            # debug_image_np = (debug_image_np * 255).clip(0, 255).astype(np.uint8)
+            #
+            # # 保存图像
+            # save_path = "debug/augment/after"
+            # os.makedirs(save_path, exist_ok=True)
+            # filename = os.path.basename(path)
+            # cv2.imwrite(os.path.join(save_path, f"aug_{filename}"), cv2.cvtColor(debug_image_np, cv2.COLOR_RGB2BGR))
         try:
             images = torch.cat(images).float().unsqueeze(1)
         except RuntimeError:
@@ -188,6 +220,7 @@ class Im2LatexDataset:
         self._get_size()
         iter(self)
 
+    # 把当前数据集对象的所有数据和配置保存到一个 .pkl 文件
     def save(self, filename):
         """save a pickled version of a dataset
 
@@ -198,9 +231,19 @@ class Im2LatexDataset:
             pickle.dump(self, file)
 
     def update(self, **kwargs):
+        """
+
+        Args:
+            **kwargs: 可以传入任意多个关键字参数
+
+        Returns:
+
+        """
+        # 批量更新基础属性
         for k in ['batchsize', 'shuffle', 'pad', 'keep_smaller_batches', 'test', 'max_seq_len']:
             if k in kwargs:
                 setattr(self, k, kwargs[k])
+        # 图像尺寸过滤
         if 'max_dimensions' in kwargs or 'min_dimensions' in kwargs:
             if 'max_dimensions' in kwargs:
                 self.max_dimensions = kwargs['max_dimensions']

@@ -15,17 +15,20 @@ from utils.utils import in_model_path, parse_args, seed_everything, get_optimize
 
 
 def train(args):
+    # 加载训练集
     dataloader = Im2LatexDataset().load(args.data)
     dataloader.update(**args, test=False)
+    # 加载验证集
     valdataloader = Im2LatexDataset().load(args.valdata)
     valargs = args.copy()
     valargs.update(batchsize=args.testbatchsize, keep_smaller_batches=True, test=True)
     valdataloader.update(**valargs)
     device = args.device
+    # 模型
     model = get_model(args)
     if torch.cuda.is_available() and not args.no_cuda:
         gpu_memory_check(model, args)
-    max_bleu, max_token_acc = 0, 0
+    max_bleu = max_token_acc = bleu_score = edit_distance = token_accuracy = 0.0
     out_path = os.path.join(args.model_path, args.name)
     os.makedirs(out_path, exist_ok=True)
 
@@ -103,7 +106,7 @@ if __name__ == '__main__':
     if parsed_args.config is None:
         with in_model_path():
             parsed_args.config = os.path.realpath('settings/debug.yaml')
-    with open(parsed_args.config, 'r') as f:
+    with open(parsed_args.config, 'r', encoding='utf-8') as f:
         params = yaml.load(f, Loader=yaml.FullLoader)
     args = parse_args(Munch(params), **vars(parsed_args))
     logging.getLogger().setLevel(logging.DEBUG if parsed_args.debug else logging.WARNING)
