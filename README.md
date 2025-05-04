@@ -5,7 +5,7 @@ python -m dataset.dataset --equations path_to_textfile --images path_to_images -
 
 ## train
 ```bash
-python -m train.py --config model/settings/config.yaml
+python -m train --config model/settings/config.yaml
 ```
 
 
@@ -17,4 +17,5 @@ python eval_with_result.py --checkpoint model/checkpoints/weights.pth --data dat
 
 ## Acknowledgment
 [LaTeX-OCR](https://github.com/lukas-blecher/LaTeX-OCR/tree/main)
+
 [rainyl](https://github.com/rainyl)

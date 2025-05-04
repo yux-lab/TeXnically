@@ -26,6 +26,7 @@ def train(args):
     device = args.device
     # 模型
     model = get_model(args)
+    print(model)
     if torch.cuda.is_available() and not args.no_cuda:
         gpu_memory_check(model, args)
     max_bleu = max_token_acc = bleu_score = edit_distance = token_accuracy = 0.0

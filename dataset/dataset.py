@@ -154,6 +154,12 @@ class Im2LatexDataset:
                 if np.random.random() < .04:
                     im[im != 255] = 0
             images.append(self.transform(image=im)['image'][:1])
+            # 调试 0
+            debug_image = self.transform(image=im)['image']
+            debug_image_np = (debug_image.permute(1, 2, 0).cpu().numpy() * 255).astype(np.uint8)  # CHW -> HWC
+            save_path = "debug/augment/after"
+            os.makedirs(save_path, exist_ok=True)
+
             # 保存 transform 后的图像（调试用）
             # 反归一化参数（和 transform 中的 Normalize 一致）
             # mean = np.array([0.7931, 0.7931, 0.7931])
