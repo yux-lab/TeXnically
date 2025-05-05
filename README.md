@@ -16,6 +16,9 @@ python eval_with_result.py --checkpoint model/checkpoints/weights.pth --data dat
 ```
 
 ## Acknowledgment
+
 [LaTeX-OCR](https://github.com/lukas-blecher/LaTeX-OCR/tree/main)
 
 [rainyl](https://github.com/rainyl)
+
+[UniMERNet](https://github.com/opendatalab/UniMERNet/tree/main)
