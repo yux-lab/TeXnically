@@ -154,32 +154,7 @@ class Im2LatexDataset:
                 if np.random.random() < .04:
                     im[im != 255] = 0
             images.append(self.transform(image=im)['image'][:1])
-            # 调试 0
-            debug_image = self.transform(image=im)['image']
-            debug_image_np = (debug_image.permute(1, 2, 0).cpu().numpy() * 255).astype(np.uint8)  # CHW -> HWC
-            save_path = "debug/augment/after"
-            os.makedirs(save_path, exist_ok=True)
 
-            # 保存 transform 后的图像（调试用）
-            # 反归一化参数（和 transform 中的 Normalize 一致）
-            # mean = np.array([0.7931, 0.7931, 0.7931])
-            # std = np.array([0.1738, 0.1738, 0.1738])
-            #
-            # # 获取 transform 后的图像张量并转换为 numpy
-            # debug_image = self.transform(image=im)['image']  # CHW, [0,1]
-            # debug_image_np = debug_image.permute(1, 2, 0).cpu().numpy()  # HWC
-            #
-            # # 反归一化：x = x * std + mean
-            # debug_image_np = debug_image_np * std + mean
-            #
-            # # 缩放到 [0, 255] 并转为 uint8
-            # debug_image_np = (debug_image_np * 255).clip(0, 255).astype(np.uint8)
-            #
-            # # 保存图像
-            # save_path = "debug/augment/after"
-            # os.makedirs(save_path, exist_ok=True)
-            # filename = os.path.basename(path)
-            # cv2.imwrite(os.path.join(save_path, f"aug_{filename}"), cv2.cvtColor(debug_image_np, cv2.COLOR_RGB2BGR))
         try:
             images = torch.cat(images).float().unsqueeze(1)
         except RuntimeError:
