@@ -15,6 +15,14 @@ python eval.py --checkpoint model/checkpoints/weights.pth --data dataset/data/mi
 python eval_with_result.py --checkpoint model/checkpoints/weights.pth --data dataset/data/miniTrain.pkl --config model/settings/config.yaml --output dataset/data/csv_results
 ```
 
+## api
+```bash
+pip install uvicorn
+python -m uvicorn api.app:app --host 0.0.0.0 --port 8502
+streamlit run api/streamlit.py
+
+```
+
 ## Acknowledgment
 
 [LaTeX-OCR](https://github.com/lukas-blecher/LaTeX-OCR/tree/main)
