@@ -29,7 +29,9 @@ def train(args):
     print(model)
     if torch.cuda.is_available() and not args.no_cuda:
         gpu_memory_check(model, args)
-    max_bleu = max_token_acc = bleu_score = edit_distance = token_accuracy = 0.0
+    max_bleu, max_token_acc = 0, 0
+    edit_distance = 1.0
+    bleu_score = token_accuracy = 0.0
     out_path = os.path.join(args.model_path, args.name)
     os.makedirs(out_path, exist_ok=True)
 
